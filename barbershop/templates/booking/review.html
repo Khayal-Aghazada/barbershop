@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Review & Confirm - Barbershop{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Steps indicator -->
+    <div class="flex mb-8">
+        <div class="w-1/5 text-center py-2 rounded-l-lg booking-step-completed">
+            <span class="font-medium">1. Location</span>
+        </div>
+        <div class="w-1/5 text-center py-2 booking-step-completed">
+            <span class="font-medium">2. Specialist</span>
+        </div>
+        <div class="w-1/5 text-center py-2 booking-step-completed">
+            <span class="font-medium">3. Services</span>
+        </div>
+        <div class="w-1/5 text-center py-2 booking-step-completed">
+            <span class="font-medium">4. Date & Time</span>
+        </div>
+        <div class="w-1/5 text-center py-2 rounded-r-lg booking-step-active">
+            <span class="font-medium">5. Confirm</span>
+        </div>
+    </div>
+
+    <h1 class="text-3xl font-bold mb-6">Review & Confirm</h1>
+    
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4">Appointment Details</h2>
+        
+        <div class="space-y-4 mb-8">
+            <!-- Location details -->
+            <div class="flex justify-between border-b border-gray-200 pb-4">
+                <div>
+                    <h3 class="font-medium">Location</h3>
+                    <p class="text-gray-600">{{ location.name }}</p>
+                    <p class="text-gray-600 text-sm">{{ location.address }}</p>
+                </div>
+                <a href="{{ url_for('book') }}" class="text-green-700 text-sm hover:underline">Change</a>
+            </div>
+            
+            <!-- Specialist details -->
+            <div class="flex justify-between border-b border-gray-200 pb-4">
+                <div>
+                    <h3 class="font-medium">Specialist</h3>
+                    {% if barber %}
+                        <p class="text-gray-600">{{ barber.name }}</p>
+                    {% else %}
+                        <p class="text-gray-600">Any Available Specialist</p>
+                    {% endif %}
+                </div>
+                <a href="{{ url_for('book_specialist', location_id=location.id) }}" class="text-green-700 text-sm hover:underline">Change</a>
+            </div>
+            
+            <!-- Services details -->
+            <div class="flex justify-between border-b border-gray-200 pb-4">
+                <div class="flex-grow">
+                    <h3 class="font-medium">Services</h3>
+                    <ul class="text-gray-600">
+                        {% for service in services %}
+                        <li>
+                            {{ service.name }} 
+                            <span class="text-sm">({{ service.duration_minutes }} min)</span>
+                            {% if service.price_max %}
+                                <span class="font-medium">${{ service.price_min }} - ${{ service.price_max }}</span>
+                            {% else %}
+                                <span class="font-medium">${{ service.price_min }}</span>
+                            {% endif %}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <a href="{{ url_for('book_services', location_id=location.id, barber_id=barber.id if barber else 'any') }}" class="text-green-700 text-sm hover:underline">Change</a>
+            </div>
+            
+            <!-- Date & Time details -->
+            <div class="flex justify-between pb-4">
+                <div>
+                    <h3 class="font-medium">Date & Time</h3>
+                    <p class="text-gray-600">{{ date }} at {{ time }}</p>
+                </div>
+                <a href="{{ url_for('book_datetime', location_id=location.id, barber_id=barber.id if barber else 'any') }}{% for service in services %}&services={{ service.id }}{% endfor %}" class="text-green-700 text-sm hover:underline">Change</a>
+            </div>
+        </div>
+        
+        <!-- Customer information form -->
+        <form action="{{ url_for('book_confirm') }}" method="post" id="confirm-form">
+            <h2 class="text-xl font-semibold mb-4">Your Information</h2>
+            
+            <!-- Hidden inputs to carry forward all data -->
+            <input type="hidden" name="location_id" value="{{ location.id }}">
+            <input type="hidden" name="barber_id" value="{{ barber.id if barber else 'any' }}">
+            {% for service in services %}
+            <input type="hidden" name="services" value="{{ service.id }}">
+            {% endfor %}
+            <input type="hidden" name="date" value="{{ date }}">
+            <input type="hidden" name="time" value="{{ time }}">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <!-- First Name -->
+                <div>
+                    <label for="first_name" class="block text-gray-700 mb-1">First Name *</label>
+                    <input type="text" id="first_name" name="first_name" required
+                           class="w-full p-2 border border-gray-300 rounded">
+                </div>
+                
+                <!-- Last Name -->
+                <div>
+                    <label for="last_name" class="block text-gray-700 mb-1">Last Name *</label>
+                    <input type="text" id="last_name" name="last_name" required
+                           class="w-full p-2 border border-gray-300 rounded">
+                </div>
+            </div>
+            
+            <!-- Email -->
+            <div class="mb-6">
+                <label for="email" class="block text-gray-700 mb-1">Email Address *</label>
+                <input type="email" id="email" name="email" required
+                       class="w-full p-2 border border-gray-300 rounded">
+                <p class="text-sm text-gray-500 mt-1">We'll send your appointment confirmation to this email.</p>
+            </div>
+            
+            <!-- Submit button -->
+            <div class="flex justify-between items-center">
+                <a href="{{ url_for('book_datetime', location_id=location.id, barber_id=barber.id if barber else 'any') }}{% for service in services %}&services={{ service.id }}{% endfor %}" class="text-green-700 font-medium hover:underline">
+                    &larr; Back to Date & Time
+                </a>
+                <button type="submit" class="bg-green-800 hover:bg-green-900 text-white font-bold py-3 px-8 rounded-full">
+                    Confirm Booking
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

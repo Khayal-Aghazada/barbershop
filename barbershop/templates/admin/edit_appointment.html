@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Appointment - Barbershop Admin{% endblock %}
+
+{% block head %}
+<!-- Flatpickr for date picker -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Edit Appointment</h1>
+        <a href="{{ url_for('admin_dashboard') }}" class="text-blue-600 hover:underline">Back to Dashboard</a>
+    </div>
+
+    <!-- Edit Form -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <form action="{{ url_for('admin_edit_appointment', id=appointment.id) }}" method="post">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <!-- Client Information Section -->
+                <div>
+                    <h2 class="text-xl font-semibold mb-4">Client Information</h2>
+                    
+                    <div class="mb-4">
+                        <label for="client_name" class="block text-gray-700 mb-1">Full Name</label>
+                        <input type="text" id="client_name" name="client_name" value="{{ appointment.client_name }}" required 
+                               class="w-full p-2 border border-gray-300 rounded">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="client_email" class="block text-gray-700 mb-1">Email</label>
+                        <input type="email" id="client_email" name="client_email" value="{{ appointment.client_email }}" required 
+                               class="w-full p-2 border border-gray-300 rounded">
+                    </div>
+                </div>
+                
+                <!-- Appointment Details Section -->
+                <div>
+                    <h2 class="text-xl font-semibold mb-4">Appointment Details</h2>
+                    
+                    <div class="mb-4">
+                        <label for="location_id" class="block text-gray-700 mb-1">Location</label>
+                        <select id="location_id" name="location_id" required class="w-full p-2 border border-gray-300 rounded">
+                            {% for location in locations %}
+                            <option value="{{ location.id }}" {% if location.id == appointment.location_id %}selected{% endif %}>
+                                {{ location.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="barber_id" class="block text-gray-700 mb-1">Barber</label>
+                        <select id="barber_id" name="barber_id" class="w-full p-2 border border-gray-300 rounded">
+                            <option value="any" {% if not appointment.barber_id %}selected{% endif %}>Any Available Specialist</option>
+                            {% for barber in barbers %}
+                            <option value="{{ barber.id }}" {% if barber.id == appointment.barber_id %}selected{% endif %}>
+                                {{ barber.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Services Section -->
+            <div class="mb-6">
+                <h2 class="text-xl font-semibold mb-4">Services</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {% for service in services %}
+                    <div class="flex items-center">
+                        <input type="checkbox" id="service-{{ service.id }}" name="services" value="{{ service.id }}"
+                               {% if service.id|string in appointment.service_list|map('string') %}checked{% endif %}
+                               class="w-5 h-5 text-blue-600 rounded focus:ring-blue-500">
+                        <label for="service-{{ service.id }}" class="ml-2">
+                            {{ service.name }} ({{ service.duration_minutes }} min)
+                            {% if service.price_max %}
+                            - ${{ service.price_min }} to ${{ service.price_max }}
+                            {% else %}
+                            - ${{ service.price_min }}
+                            {% endif %}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Date and Time Section -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <label for="date" class="block text-gray-700 mb-1">Date</label>
+                    <input type="text" id="date-picker" name="date" value="{{ appointment.date.strftime('%Y-%m-%d') }}" required 
+                           class="w-full p-2 border border-gray-300 rounded">
+                </div>
+                
+                <div>
+                    <label for="time" class="block text-gray-700 mb-1">Time</label>
+                    <input type="text" id="time" name="time" value="{{ appointment.start_time }}" required 
+                          placeholder="HH:MM" pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"
+                          class="w-full p-2 border border-gray-300 rounded">
+                    <p class="text-xs text-gray-500 mt-1">Format: 24-hour time (e.g. 13:30)</p>
+                </div>
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="flex justify-between">
+                <a href="{{ url_for('admin_dashboard') }}" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
+                    Cancel
+                </a>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Update Appointment
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Initialize date picker
+    flatpickr("#date-picker", {
+        dateFormat: "Y-m-d",
+    });
+</script>
+{% endblock %} 

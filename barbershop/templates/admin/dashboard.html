@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - Barbershop{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-3xl font-bold">Admin Dashboard</h1>
+        <a href="{{ url_for('home') }}" class="text-blue-600 hover:underline">Back to Site</a>
+    </div>
+
+    <!-- Filters -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4">Filter Appointments</h2>
+        <form action="{{ url_for('admin_dashboard') }}" method="get" class="flex flex-wrap gap-4">
+            <div class="w-full md:w-auto">
+                <label for="date" class="block text-gray-700 mb-1">Date</label>
+                <input type="date" id="date" name="date" class="p-2 border border-gray-300 rounded">
+            </div>
+            
+            <div class="w-full md:w-auto">
+                <label for="location" class="block text-gray-700 mb-1">Location</label>
+                <select id="location" name="location_id" class="p-2 border border-gray-300 rounded">
+                    <option value="">All Locations</option>
+                    {% for location in locations %}
+                    <option value="{{ location.id }}">{{ location.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="w-full md:w-auto">
+                <label for="barber" class="block text-gray-700 mb-1">Barber</label>
+                <select id="barber" name="barber_id" class="p-2 border border-gray-300 rounded">
+                    <option value="">All Barbers</option>
+                    {% for barber in barbers %}
+                    <option value="{{ barber.id }}">{{ barber.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="w-full md:w-auto flex items-end">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    Filter
+                </button>
+                <a href="{{ url_for('admin_dashboard') }}" class="ml-2 text-blue-600 hover:underline">
+                    Clear
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Appointments Table -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+        <h2 class="text-xl font-semibold p-6 bg-gray-50 border-b">Appointments</h2>
+        
+        {% if appointments %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Date/Time
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Client
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Location
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Barber
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Services
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Actions
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for appointment in appointments %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">{{ appointment.date.strftime('%Y-%m-%d') }}</div>
+                            <div class="text-sm text-gray-500">{{ appointment.start_time }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">{{ appointment.client_name }}</div>
+                            <div class="text-sm text-gray-500">{{ appointment.client_email }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">{{ appointment.location.name }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">
+                                {% if appointment.barber %}
+                                {{ appointment.barber.name }}
+                                {% else %}
+                                Any Specialist
+                                {% endif %}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900">
+                                {% set service_ids = appointment.service_list %}
+                                <ul class="list-disc list-inside">
+                                    {% for service_id in service_ids %}
+                                        {% for service in services if service.id == service_id %}
+                                            <li>{{ service.name }}</li>
+                                        {% endfor %}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                            <a href="{{ url_for('admin_edit_appointment', id=appointment.id) }}" class="text-blue-600 hover:text-blue-900 mr-4">
+                                Edit
+                            </a>
+                            <form action="{{ url_for('admin_delete_appointment', id=appointment.id) }}" method="post" class="inline-block">
+                                <button type="submit" class="text-red-600 hover:text-red-900" 
+                                       onclick="return confirm('Are you sure you want to delete this appointment?')">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="p-6 text-gray-500 text-center">
+            No appointments found.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

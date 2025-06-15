@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Barbershop{% endblock %}</title>
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom styles -->
+    <style>
+        :root {
+            --luxury-green: #1a5d1a;
+            --luxury-dark-green: #0f3d0f;
+            --luxury-black: #121212;
+            --luxury-gold: #d4af37;
+        }
+        
+        .booking-step-active {
+            @apply bg-green-800 text-white;
+        }
+        .booking-step-completed {
+            @apply bg-green-900 text-white;
+        }
+        
+        .btn-primary {
+            background-color: var(--luxury-green);
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: var(--luxury-dark-green);
+        }
+    </style>
+    
+    {% block head %}{% endblock %}
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-black shadow-md">
+        <div class="container mx-auto px-4 py-6 flex justify-between items-center">
+            <a href="/" class="text-2xl font-bold text-green-500">Barbershop</a>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="/" class="text-white hover:text-green-400">Home</a></li>
+                    <li><a href="/book" class="text-white hover:text-green-400">Book Now</a></li>
+                    <li><a href="/assistant" class="text-white hover:text-green-400 flex items-center">
+                        <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                        </svg>
+                        AI Assistant
+                    </a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mx-auto px-4 py-3">
+                {% for category, message in messages %}
+                    {% set alert_color = 'bg-green-100 border-green-500 text-green-900' if category == 'success' else 'bg-red-100 border-red-500 text-red-900' %}
+                    <div class="border-l-4 p-4 {{ alert_color }} mb-4">
+                        <p>{{ message }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+    
+    <!-- Main content -->
+    <main class="container mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-black text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-green-500">Barbershop</h3>
+                    <p class="text-gray-300">The premium hair styling experience.</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-green-500">Contact</h3>
+                    <p class="text-gray-300">Email: info@barbershop.com</p>
+                    <p class="text-gray-300">Phone: +1 234 567 890</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-green-500">Hours</h3>
+                    <p class="text-gray-300">Monday - Friday: 9am - 8pm</p>
+                    <p class="text-gray-300">Saturday: 10am - 6pm</p>
+                    <p class="text-gray-300">Sunday: Closed</p>
+                </div>
+            </div>
+            <div class="mt-8 pt-8 border-t border-gray-600 text-gray-400 text-center">
+                <p>&copy; {{ now.year }} Barbershop. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html> 

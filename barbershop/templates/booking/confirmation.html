@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Booking Confirmed - Barbershop{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <div class="bg-white rounded-lg shadow-md p-8 mb-8">
+        <div class="text-center mb-8">
+            <!-- Success icon -->
+            <div class="mx-auto bg-green-900 rounded-full w-20 h-20 flex items-center justify-center mb-4">
+                <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+            </div>
+            
+            <h1 class="text-3xl font-bold mb-2">Booking Confirmed!</h1>
+            <p class="text-gray-600 mb-2">Your appointment has been successfully booked.</p>
+            <p class="text-gray-600">A confirmation email has been sent to <span class="font-medium">{{ appointment.client_email }}</span>.</p>
+        </div>
+        
+        <div class="border-t border-b border-gray-200 py-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Appointment Details</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-medium text-gray-700 mb-2">Date & Time</h3>
+                    <p class="text-lg">{{ appointment.date }}</p>
+                    <p class="text-lg">{{ appointment.start_time }}</p>
+                </div>
+                
+                <div>
+                    <h3 class="font-medium text-gray-700 mb-2">Location</h3>
+                    <p class="text-lg">{{ appointment.location.name }}</p>
+                    <p class="text-gray-600">{{ appointment.location.address }}</p>
+                    <p class="text-gray-600">{{ appointment.location.phone }}</p>
+                </div>
+            </div>
+            
+            <div class="mt-6">
+                <h3 class="font-medium text-gray-700 mb-2">Services</h3>
+                {% set service_ids = appointment.service_list %}
+                {% set services_query = service_ids | map('int') | list %}
+                {% set services = services_query | selectattr("id", "in", service_ids) | list %}
+                
+                <ul class="list-disc list-inside text-gray-600">
+                    {% for service_id in service_ids %}
+                        {% for service in services if service.id == service_id %}
+                            <li>{{ service.name }} ({{ service.duration_minutes }} min)</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <p class="mb-4">Need to modify or cancel your appointment?</p>
+            <p class="mb-6">Please call us at <span class="font-medium">{{ appointment.location.phone }}</span></p>
+            
+            <a href="/" class="bg-green-800 hover:bg-green-900 text-white font-bold py-3 px-8 rounded-full inline-block">
+                Back to Home
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

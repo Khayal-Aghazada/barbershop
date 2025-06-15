@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Select Date & Time - Barbershop{% endblock %}
+
+{% block head %}
+<!-- Flatpickr for date picker -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Steps indicator -->
+    <div class="flex mb-8">
+        <div class="w-1/5 text-center py-2 rounded-l-lg booking-step-completed">
+            <span class="font-medium">1. Location</span>
+        </div>
+        <div class="w-1/5 text-center py-2 booking-step-completed">
+            <span class="font-medium">2. Specialist</span>
+        </div>
+        <div class="w-1/5 text-center py-2 booking-step-completed">
+            <span class="font-medium">3. Services</span>
+        </div>
+        <div class="w-1/5 text-center py-2 booking-step-active">
+            <span class="font-medium">4. Date & Time</span>
+        </div>
+        <div class="w-1/5 text-center py-2 rounded-r-lg bg-gray-200">
+            <span class="text-gray-600">5. Confirm</span>
+        </div>
+    </div>
+
+    <h1 class="text-3xl font-bold mb-6">Select Date & Time</h1>
+    
+    <form action="{{ url_for('book_review') }}" method="get" id="datetime-form">
+        <!-- Hidden fields to carry forward -->
+        <input type="hidden" name="location_id" value="{{ location_id }}">
+        <input type="hidden" name="barber_id" value="{{ barber_id }}">
+        {% for service_id in services %}
+        <input type="hidden" name="services" value="{{ service_id }}">
+        {% endfor %}
+        
+        <!-- Date picker -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-xl font-semibold mb-4">Select Date</h2>
+            <input type="text" name="date" id="date-picker" class="w-full p-3 border border-gray-300 rounded-lg mb-4" placeholder="Select a date" required>
+            
+            <!-- Time slots -->
+            <div id="time-slots-container" class="mt-8">
+                <h2 class="text-xl font-semibold mb-4">Available Times</h2>
+                <p id="select-date-message" class="text-gray-600">Please select a date to see available time slots.</p>
+                
+                <div id="time-slots" class="grid grid-cols-3 md:grid-cols-4 gap-3 mt-4 hidden">
+                    <!-- Time slots will be populated with JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Error message (hidden by default) -->
+        <div id="time-error-message" class="bg-red-100 border-l-4 border-red-500 p-4 mb-6 hidden">
+            <p class="text-red-700">Please select a time slot to continue.</p>
+        </div>
+        
+        <!-- Selected time (hidden) -->
+        <input type="hidden" name="time" id="selected-time">
+        
+        <!-- Continue button -->
+        <div class="flex justify-between items-center">
+            <a href="{{ url_for('book_services', location_id=location_id, barber_id=barber_id) }}" class="text-green-700 font-medium hover:underline">
+                &larr; Back to Services
+            </a>
+            <button type="submit" id="continue-btn" class="bg-green-800 hover:bg-green-900 text-white font-bold py-2 px-6 rounded-full">
+                Review & Confirm
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Initialize date picker
+    const datePicker = flatpickr("#date-picker", {
+        minDate: "today",
+        dateFormat: "Y-m-d",
+        disable: [
+            function(date) {
+                // Disable Sundays
+                return date.getDay() === 0;
+            }
+        ],
+        onChange: function(selectedDates, dateStr) {
+            // Show time slots when date is selected
+            document.getElementById('select-date-message').classList.add('hidden');
+            document.getElementById('time-slots').classList.remove('hidden');
+            
+            // In a real application, you would fetch available slots from the server
+            // based on the selected date, barber, and services
+            populateMockTimeSlots();
+        }
+    });
+    
+    // Mock time slots for demonstration
+    function populateMockTimeSlots() {
+        const timeSlotsContainer = document.getElementById('time-slots');
+        timeSlotsContainer.innerHTML = '';
+        
+        // Sample time slots
+        const timeSlots = [
+            "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
+            "12:00", "12:30", "13:00", "13:30", "14:00", "14:30",
+            "15:00", "15:30", "16:00", "16:30", "17:00", "17:30"
+        ];
+        
+        // Create time slot buttons
+        timeSlots.forEach(time => {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'time-slot-btn p-2 border border-gray-300 rounded text-center transition-colors';
+            button.textContent = time;
+            button.addEventListener('click', function() {
+                // Clear previous selection
+                document.querySelectorAll('.time-slot-btn').forEach(btn => {
+                    btn.classList.remove('bg-green-800', 'text-white');
+                    btn.classList.add('hover:bg-green-100');
+                });
+                
+                // Highlight selected time
+                this.classList.add('bg-green-800', 'text-white');
+                this.classList.remove('hover:bg-green-100');
+                
+                // Store selected time in hidden field
+                document.getElementById('selected-time').value = time;
+                
+                // Hide error message if shown
+                document.getElementById('time-error-message').classList.add('hidden');
+            });
+            
+            timeSlotsContainer.appendChild(button);
+        });
+    }
+    
+    // Form submission validation
+    document.getElementById('datetime-form').addEventListener('submit', function(event) {
+        const selectedTime = document.getElementById('selected-time').value;
+        
+        if (!selectedTime) {
+            event.preventDefault();
+            document.getElementById('time-error-message').classList.remove('hidden');
+        }
+    });
+</script>
+{% endblock %} 

@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block title %}Barbershop - Premium Hair Styling{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="relative h-screen -mt-24">
+    <div class="absolute inset-0 bg-black opacity-50"></div>
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black opacity-60"></div>
+    
+    <!-- Hero image -->
+    <div class="absolute inset-0">
+        <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+             alt="Barbershop" 
+             class="w-full h-full object-cover">
+    </div>
+    
+    <!-- Hero content -->
+    <div class="absolute inset-0 flex flex-col justify-center items-center text-center px-4 text-white">
+        <h1 class="text-5xl font-bold mb-6">Exceptional Haircuts.<br>Premium Experience.</h1>
+        <p class="text-xl mb-8 max-w-2xl">Professional barbers providing top-notch services in a comfortable and stylish environment.</p>
+        <a href="/book" class="bg-green-800 hover:bg-green-900 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300">
+            Book Now
+        </a>
+    </div>
+</div>
+
+<!-- About Section -->
+<div class="py-16 bg-white">
+    <div class="max-w-4xl mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-8">About Us</h2>
+        <p class="text-lg text-gray-700 mb-6">
+            Welcome to Barbershop, where style meets tradition. We're dedicated to providing exceptional haircuts and grooming services in a relaxed and professional atmosphere.
+        </p>
+        <p class="text-lg text-gray-700 mb-6">
+            Our team of expert barbers combines traditional techniques with modern styles to give you the perfect look. Whether you're looking for a classic cut, a fresh fade, or a complete style makeover, we've got you covered.
+        </p>
+        <p class="text-lg text-gray-700">
+            Visit one of our locations today and experience the difference that comes with premium service and attention to detail.
+        </p>
+    </div>
+</div>
+
+<!-- Gallery Section -->
+<div class="py-16 bg-gray-100">
+    <div class="max-w-6xl mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-8">Our Work</h2>
+        
+        <!-- Gallery grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Gallery item 1 -->
+            <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                <img src="https://images.unsplash.com/photo-1622296089863-eb7fc530daa8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" 
+                     alt="Haircut example 1" 
+                     class="w-full h-80 object-cover">
+            </div>
+            
+            <!-- Gallery item 2 -->
+            <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                <img src="https://images.unsplash.com/photo-1593702288056-f5834534864d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" 
+                     alt="Haircut example 2" 
+                     class="w-full h-80 object-cover">
+            </div>
+            
+            <!-- Gallery item 3 -->
+            <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                <img src="https://images.unsplash.com/photo-1599351431613-18ef1fdd27e1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=688&q=80" 
+                     alt="Haircut example 3" 
+                     class="w-full h-80 object-cover">
+            </div>
+            
+            <!-- Gallery item 4 -->
+            <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                <img src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                     alt="Haircut example 4" 
+                     class="w-full h-80 object-cover">
+            </div>
+            
+            <!-- Gallery item 5 -->
+            <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" 
+                     alt="Haircut example 5" 
+                     class="w-full h-80 object-cover">
+            </div>
+            
+            <!-- Gallery item 6 -->
+            <div class="overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+                <img src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=687&q=80" 
+                     alt="Haircut example 6" 
+                     class="w-full h-80 object-cover">
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="py-16 bg-green-900 text-white">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+        <h2 class="text-3xl font-bold mb-6">Ready for a Fresh Look?</h2>
+        <p class="text-xl mb-8">Book your appointment today and experience premium haircut service.</p>
+        <a href="/book" class="bg-black text-green-500 hover:bg-gray-900 font-bold py-3 px-8 rounded-full text-lg transition duration-300 border border-green-500">
+            Book an Appointment
+        </a>
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Select Services - Barbershop{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Steps indicator -->
+    <div class="flex mb-8">
+        <div class="w-1/5 text-center py-2 rounded-l-lg booking-step-completed">
+            <span class="font-medium">1. Location</span>
+        </div>
+        <div class="w-1/5 text-center py-2 booking-step-completed">
+            <span class="font-medium">2. Specialist</span>
+        </div>
+        <div class="w-1/5 text-center py-2 booking-step-active">
+            <span class="font-medium">3. Services</span>
+        </div>
+        <div class="w-1/5 text-center py-2 bg-gray-200">
+            <span class="text-gray-600">4. Date & Time</span>
+        </div>
+        <div class="w-1/5 text-center py-2 rounded-r-lg bg-gray-200">
+            <span class="text-gray-600">5. Confirm</span>
+        </div>
+    </div>
+
+    <h1 class="text-3xl font-bold mb-6">Select Services</h1>
+    
+    <form action="{{ url_for('book_datetime') }}" method="get" id="service-form">
+        <!-- Hidden fields to carry forward -->
+        <input type="hidden" name="location_id" value="{{ location_id }}">
+        <input type="hidden" name="barber_id" value="{{ barber_id }}">
+        
+        <!-- Services list -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div class="space-y-4">
+                {% for service in services %}
+                <div class="flex items-center border-b border-gray-200 pb-4 last:border-0 last:pb-0">
+                    <input type="checkbox" id="service-{{ service.id }}" name="services" value="{{ service.id }}"
+                           class="w-5 h-5 text-green-800 rounded focus:ring-green-700">
+                    <label for="service-{{ service.id }}" class="ml-3 flex-grow">
+                        <div class="font-medium text-lg">{{ service.name }}</div>
+                        <div class="text-gray-600">{{ service.duration_minutes }} min</div>
+                    </label>
+                    <div class="text-right">
+                        {% if service.price_max %}
+                        <div class="font-bold">${{ service.price_min }} - ${{ service.price_max }}</div>
+                        {% else %}
+                        <div class="font-bold">${{ service.price_min }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- No services message -->
+            {% if not services %}
+            <div class="bg-yellow-100 border-l-4 border-yellow-500 p-4">
+                <p class="text-yellow-700">No services available. Please contact the shop directly.</p>
+            </div>
+            {% endif %}
+        </div>
+        
+        <!-- Error message (hidden by default) -->
+        <div id="error-message" class="bg-red-100 border-l-4 border-red-500 p-4 mb-6 hidden">
+            <p class="text-red-700">Please select at least one service to continue.</p>
+        </div>
+        
+        <!-- Continue button -->
+        <div class="flex justify-between items-center">
+            <a href="{{ url_for('book_specialist', location_id=location_id) }}" class="text-green-700 font-medium hover:underline">
+                &larr; Back to Specialists
+            </a>
+            <button type="submit" id="continue-btn" class="bg-green-800 hover:bg-green-900 text-white font-bold py-2 px-6 rounded-full">
+                Continue to Date & Time
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('service-form').addEventListener('submit', function(event) {
+        // Check if at least one service is selected
+        const selectedServices = document.querySelectorAll('input[name="services"]:checked');
+        if (selectedServices.length === 0) {
+            event.preventDefault();
+            document.getElementById('error-message').classList.remove('hidden');
+        }
+    });
+    
+    // Hide error when a service is selected
+    const serviceCheckboxes = document.querySelectorAll('input[name="services"]');
+    serviceCheckboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', function() {
+            if (this.checked) {
+                document.getElementById('error-message').classList.add('hidden');
+            }
+        });
+    });
+</script>
+{% endblock %} 
